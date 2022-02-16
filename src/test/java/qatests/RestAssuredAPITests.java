@@ -23,6 +23,9 @@ public class RestAssuredAPITests {
     public void postRequest() {
 
         JSONObject req = new JSONObject();
+
+        //in every execution new email address will be posted
+
         int randomNum= (int)(Math.random()*(200-1+1)+1);
         req.put("name", "apnaeqa oskar ericsson");
         req.put("email", "oskferar81"+randomNum+ "@gmail.com");
@@ -51,6 +54,8 @@ public class RestAssuredAPITests {
         Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
 
     }
+
+    // if required source is not available then test will fail and response code 404
 
     @Test(priority = 3)
     public void deleteRequest() {
