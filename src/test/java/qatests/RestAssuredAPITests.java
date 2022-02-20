@@ -4,10 +4,11 @@
  * */
 package qatests;
 
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.apache.http.HttpStatus;
 import org.json.simple.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -15,20 +16,17 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
 
-public class RestAssuredAPITests {
+public class RestAssuredAPITests extends Shared {
 
-    String token = "d640e5e3fe005efda204263e83c0c49707dc99a699e9f29447c6ba5d116985d2";
 
     @Test(priority = 1)
     public void postRequest() {
 
+
         JSONObject req = new JSONObject();
 
-        //in every execution new email address will be posted
-
-        int randomNum= (int)(Math.random()*(200-1+1)+1);
-        req.put("name", "apnaeqa oskar ericsson");
-        req.put("email", "oskferar81"+randomNum+ "@gmail.com");
+        req.put("name", "apn Premkrar ericsson");
+        req.put("email", "osekrar781@gmail.com");
         req.put("gender", "male");
         req.put("status", "active");
 
@@ -39,36 +37,95 @@ public class RestAssuredAPITests {
                 contentType(ContentType.JSON).
                 accept(ContentType.JSON).
                 body(req.toJSONString());
+        //Response object
         Response response = httpRequest.post("https://gorest.co.in/public/v1/users");
-        System.out.println(response.getStatusCode());
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_CREATED);
+
+        System.out.println("Reponse code is :"+response.getStatusCode());
+
+        ExtentTest test_Results1 = extent.createTest("Post Reqest Result", "It is test report of post request ");
+
+        if(response.getStatusCode()!=201 ){
+            System.out.println("Test failed becuase resource is already availble,  make change in email to make this test pass ");
+            test_Results1.log(Status.INFO, "Test failed");
+            test_Results1.info("Reponce code is not as expected");
+            test_Results1.fail("Test is Failed");
+        }
+        else {
+            System.out.println("Test Passed responce code is as expected ");
+            test_Results1.log(Status.INFO, "Test passed");
+            test_Results1.info("Reponce code is as expected");
+            test_Results1.pass("Test is passed");
+        }
+        //status code validation
+        Assert.assertEquals(response.getStatusCode(), 201);
 
     }
+
 
     @Test(priority = 2)
     public void getRequest() {
-        RequestSpecification httpRequest = given();
-        Response response = httpRequest.when().get("http://gorest.co.in/public/v1/users/127");
-        System.out.println(response.getStatusCode());
 
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_OK);
+        RequestSpecification httpRequest = given();
+        Response response = httpRequest.when().get("http://gorest.co.in/public/v1/users/129");
+        System.out.println("Responce code is : "+response.getStatusCode());
+
+        ExtentTest   test_Results2 = extent.createTest("Get Reqest Result", "It is test report of get request ");
+
+        if(response.getStatusCode()!=200){
+            System.out.println("Test is failed becuase resource is not available");
+            test_Results2.log(Status.INFO, "Test failed");
+            test_Results2.info("Reponce code is not as expected");
+            test_Results2.fail("Test is Failed");
+        }
+        else {
+            System.out.println("Test Passed");
+            test_Results2.log(Status.INFO, "Test passed");
+            test_Results2.info("Reponce code is as expected");
+            test_Results2.pass("Test is passed");
+        }
+        //status code validation
+        Assert.assertEquals(response.getStatusCode(), 200);
 
     }
-
-    // if required source is not available then test will fail and response code 404
 
     @Test(priority = 3)
     public void deleteRequest() {
 
-        baseURI = "https://gorest.co.in/public/v1/users/128";
+        baseURI = "https://gorest.co.in/public/v1/users/123";
 
         RequestSpecification httpRequest = given().auth().oauth2(token);
         //Response object
         Response response = httpRequest.delete(baseURI);
-        //status code validation
+
         int statusCode = response.getStatusCode();
         System.out.println("Status code is: " + statusCode);
-        Assert.assertEquals(response.getStatusCode(), HttpStatus.SC_NO_CONTENT);
+
+        ExtentTest test_Results3 = extent.createTest("Delete Reqest Result", "It is test report of Delete request ");
+
+        if(response.getStatusCode()!=204){
+            System.out.println("Test is failed becuase resource is not available");
+            test_Results3.log(Status.INFO, "Test failed");
+            test_Results3.info("Reponce code is not as expected");
+            test_Results3.fail("Test is Failed");
+        }
+        else {
+            System.out.println("Test Passed");
+            test_Results3.log(Status.INFO, "Test passed");
+            test_Results3.info("Reponce code is as expected");
+            test_Results3.pass("Test is passed");
+        }
+        //status code validation
+        Assert.assertEquals(response.getStatusCode(), 204);
+
+
+
     }
+
+
+
+
+
+
+
 
 }

@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+
+<suite name="All Test SuiteRestAPI">
+
+    <test name="RestAPI1"   >
+        <classes>
+            <class name="qatests.RestAssuredAPITests"></class>
+
+        </classes>
+    </test>
+
+</suite>
